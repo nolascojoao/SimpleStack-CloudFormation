@@ -77,12 +77,15 @@ Define a versão do CloudFormation utilizada (`2010-09-09`).
 Fornece uma breve descrição do template.
 
 ### **3. Parameters (Parâmetros)**
+Os parâmetros permitem que o usuário forneça valores no momento da criação da pilha (**stack**), tornando o template mais flexível.
+
 - **InstanceType**: Permite ao usuário escolher o tipo da instância EC2 (t2.micro, t3.micro, t3.small).
 - **KeyName**: Nome do par de chaves SSH para acessar a instância.
 - **VpcId**: ID da VPC onde a instância será criada.
 - **SubnetId**: Subnet dentro da VPC onde a instância será lançada.
 
 ### **4. Resources (Recursos)**
+Os recursos definem os serviços que serão criados pela pilha do CloudFormation.
 
 #### **4.1. Instância EC2**
 - Criada com o tipo definido em `InstanceType`.
@@ -97,6 +100,8 @@ Fornece uma breve descrição do template.
 - Associado à VPC informada pelo usuário.
 
 ### **5. Mappings (Mapeamentos)**
+Os mapeamentos permitem associar valores fixos a chaves e são úteis para definir configurações específicas por região.
+
 - Define uma **AMI específica para a região `us-east-1`**.
 - O `ImageId` da instância EC2 é obtido dinamicamente com `!FindInMap [RegionMap, !Ref "AWS::Region", AMI]`.
 
