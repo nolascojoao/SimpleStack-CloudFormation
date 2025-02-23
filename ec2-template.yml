@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Template para lançamento de instância EC2 na AWS dentro de uma VPC específica.'
+
+Parameters:
+  InstanceType:
+    Description: 'Tipo da instância EC2'
+    Type: String
+    Default: 't2.micro'
+    AllowedValues:
+      - 't2.micro'
+      - 't3.micro'
+      - 't3.small'
+
+  KeyName:
+    Description: 'Nome do par de chaves SSH'
+    Type: AWS::EC2::KeyPair::KeyName
+
+  VpcId:
+    Description: 'ID da VPC onde a instância será lançada'
+    Type: AWS::EC2::VPC::Id
+
+  SubnetId:
+    Description: 'ID da Subnet dentro da VPC'
+    Type: AWS::EC2::Subnet::Id
+
+Resources:
+  TestEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyName
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
+      SubnetId: !Ref SubnetId
+      SecurityGroupIds:
+        - !Ref InstanceSecurityGroup
+      Tags:
+        - Key: Name
+          Value: TestEC2Instance
+
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: 'Permitir acesso SSH'
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+
+Mappings:
+  RegionMap:
+    us-east-1:
+      AMI: ami-05b10e08d247fb927
